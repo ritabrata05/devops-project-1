@@ -14,7 +14,7 @@ module "networking" {
   cidr_private_subnet  = var.cidr_private_subnet
 }
 
-module "security_group" {
+/* module "security_group" {
   source                     = "./security-groups"
   ec2_sg_name                = "SG for EC2 to enable SSH(22) and HTTP(80)"
   vpc_id                     = module.networking.dev_proj_1_vpc_id
@@ -63,6 +63,17 @@ module "alb" {
   lb_target_group_attachment_port = 5000
 }
 
+module "rds_db_instance" {
+  source               = "./rds"
+  db_subnet_group_name = "dev_proj_1_rds_subnet_group"
+  subnet_groups        = tolist(module.networking.dev_proj_1_public_subnets)
+  rds_mysql_sg_id      = module.security_group.rds_mysql_sg_id
+  mysql_db_identifier  = "mydb"
+  mysql_username       = "dbuser"
+  mysql_password       = "dbpassword"
+  mysql_dbname         = "devprojdb"
+} */
+
 /* module "hosted_zone" {
   source          = "./hosted-zone"
   domain_name     = var.domain_name
@@ -75,14 +86,3 @@ module "aws_ceritification_manager" {
   domain_name    = var.domain_name
   hosted_zone_id = module.hosted_zone.hosted_zone_id
 } */
-
-module "rds_db_instance" {
-  source               = "./rds"
-  db_subnet_group_name = "dev_proj_1_rds_subnet_group"
-  subnet_groups        = tolist(module.networking.dev_proj_1_public_subnets)
-  rds_mysql_sg_id      = module.security_group.rds_mysql_sg_id
-  mysql_db_identifier  = "mydb"
-  mysql_username       = "dbuser"
-  mysql_password       = "dbpassword"
-  mysql_dbname         = "devprojdb"
-}
